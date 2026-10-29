@@ -1,0 +1,42 @@
+<div class="container">
+<h1>My orders</h1>
+
+@if(loading){
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+@else if(errorMessage){
+    <div class="alert alert-danger">{{errorMessage}}</div>
+}
+@else if(orders.length === 0){
+    <div class="text-center py-5">
+        <h4>No orders yet</h4>
+        <a routerLink="/product-list" class="btn btn-primary">Start shopping</a>
+    </div>
+}
+@else{
+    @for(o of orders;track o._id){
+    <div class="card card-body mb-3">
+        <div class="d-flex justify-content-between flex-wrap">
+            <div>
+                <strong>Order #{{o._id.slice(-6).toUpperCase()}}</strong>
+                <div class="text-muted small">{{o.createdAt | date:'medium'}}</div>
+            </div>
+            <span class="badge align-self-start text-capitalize" [class]="badge(o.status)">{{o.status}}</span>
+        </div>
+        @for(i of o.items;track i.product){
+        <div class="d-flex justify-content-between py-1">
+            <span>{{i.quantity}} x {{i.name}}</span>
+            <span class="text-muted">{{i.price * i.quantity | currency:'EGP':'code':'1.0-2'}}</span>
+        </div>
+        }
+        <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">
+            <strong>Total: {{o.totalPrice | currency:'EGP':'code':'1.0-2'}}</strong>
+            @if(o.status === 'pending'){
+            <button class="btn btn-outline-danger btn-sm" (click)="cancel(o)">Cancel order</button>
+            }
+        </div>
+    </div>
+    }
+    <app-pagination [page]="page" [totalPages]="totalPages" (pageChange)="load($event)"></app-pagination>
+}
+</div>

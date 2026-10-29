@@ -1,0 +1,40 @@
+<div class="container">
+<div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+    <h1 class="mb-0">Users</h1>
+    <input type="search" class="form-control" style="max-width: 280px;" placeholder="Search name, email, phone..." (input)="onSearch($any($event.target).value)">
+</div>
+
+@if(loading){
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+@else if(errorMessage){
+    <div class="alert alert-danger">{{errorMessage}}</div>
+}
+@else{
+<div class="table-responsive">
+<table class="table align-middle">
+    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+        @for(u of users;track u._id){
+        <tr>
+            <td class="fw-semibold">{{u.name}}</td>
+            <td>{{u.email}}</td>
+            <td>{{u.phone || '-'}}</td>
+            <td><span class="badge text-capitalize" [class.bg-primary]="u.role === 'admin'" [class.bg-secondary]="u.role !== 'admin'">{{u.role}}</span></td>
+            <td class="text-muted small">{{u.createdAt | date:'mediumDate'}}</td>
+            <td><span class="badge" [class.bg-danger]="u.isBlocked" [class.bg-success]="!u.isBlocked">{{u.isBlocked ? 'Blocked' : 'Active'}}</span></td>
+            <td class="text-end">
+                @if(u._id !== myId){
+                <button class="btn btn-sm" [class.btn-outline-danger]="!u.isBlocked" [class.btn-outline-success]="u.isBlocked" (click)="toggleBlock(u)">{{u.isBlocked ? 'Unblock' : 'Block'}}</button>
+                }
+            </td>
+        </tr>
+        } @empty {
+        <tr><td colspan="7" class="text-center text-muted">No users found.</td></tr>
+        }
+    </tbody>
+</table>
+</div>
+<app-pagination [page]="page" [totalPages]="totalPages" (pageChange)="load($event)"></app-pagination>
+}
+</div>

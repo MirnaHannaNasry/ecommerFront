@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MyStore</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    (function(){ var m = window.matchMedia('(prefers-color-scheme: dark)');
+      function set(){ document.documentElement.setAttribute('data-bs-theme', m.matches ? 'dark' : 'light'); }
+      set(); m.addEventListener && m.addEventListener('change', set); })();
+  </script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

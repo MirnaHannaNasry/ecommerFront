@@ -1,0 +1,59 @@
+<div class="container">
+<h1>Dashboard</h1>
+
+@if(loading){
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+@else if(errorMessage){
+    <div class="alert alert-danger">{{errorMessage}} <button class="btn btn-sm btn-outline-danger ms-2" (click)="load()">Retry</button></div>
+}
+@else{
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3"><div class="card card-body"><span class="text-muted">Revenue</span><span class="fs-3 fw-bold">{{revenue | currency:'EGP':'code':'1.0-2'}}</span><small class="text-muted">without cancelled / rejected / refunded</small></div></div>
+    <div class="col-6 col-lg-3"><div class="card card-body"><span class="text-muted">Orders</span><span class="fs-3 fw-bold">{{ordersCount}}</span></div></div>
+    <div class="col-6 col-lg-3"><div class="card card-body"><span class="text-muted">Products</span><span class="fs-3 fw-bold">{{productsCount}}</span></div></div>
+    <div class="col-6 col-lg-3"><div class="card card-body"><span class="text-muted">Users</span><span class="fs-3 fw-bold">{{usersCount}}</span></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6"><div class="card card-body h-100">
+        <h5>Orders by status</h5>
+        @for(s of byStatus;track s._id){
+            <div class="d-flex justify-content-between py-1"><span class="text-capitalize">{{s._id}}</span><strong>{{s.count}}</strong></div>
+        } @empty { <p class="text-muted">No orders yet.</p> }
+    </div></div>
+    <div class="col-lg-6"><div class="card card-body h-100">
+        <h5>Monthly revenue</h5>
+        @for(m of monthly;track m._id.year + '-' + m._id.month){
+            <div class="d-flex align-items-center gap-2 my-1">
+                <small class="text-muted label">{{m._id.month}}/{{m._id.year}}</small>
+                <div class="progress flex-grow-1" style="height: 10px;"><div class="progress-bar" [style.width.%]="percent(m.totalRevenue)"></div></div>
+                <small>{{m.totalRevenue | currency:'EGP':'code':'1.0-0'}}</small>
+            </div>
+        } @empty { <p class="text-muted">No sales yet.</p> }
+    </div></div>
+</div>
+
+<div class="row g-3 mb-5">
+    <div class="col-lg-6"><div class="card card-body h-100">
+        <h5>Top products</h5>
+        @for(p of topProducts;track p._id){
+            <div class="d-flex align-items-center gap-2 py-1">
+                <img [src]="staticURL + p.imgURL" class="thumb" alt="">
+                <div class="flex-grow-1">{{p.name}}<br><small class="text-muted">{{p.quantitySold}} sold</small></div>
+                <strong>{{p.revenue | currency:'EGP':'code':'1.0-0'}}</strong>
+            </div>
+        } @empty { <p class="text-muted">Nothing sold yet.</p> }
+    </div></div>
+    <div class="col-lg-6"><div class="card card-body h-100">
+        <h5>Recent orders</h5>
+        @for(o of recentOrders;track o._id){
+            <div class="d-flex justify-content-between py-1">
+                <span><strong>#{{o._id.slice(-6).toUpperCase()}}</strong> <small class="text-muted">{{o.customer?.name}} - {{o.createdAt | date:'short'}}</small></span>
+                <span><span class="badge bg-secondary text-capitalize me-1">{{o.status}}</span>{{o.totalPrice | currency:'EGP':'code':'1.0-0'}}</span>
+            </div>
+        } @empty { <p class="text-muted">No orders yet.</p> }
+    </div></div>
+</div>
+}
+</div>

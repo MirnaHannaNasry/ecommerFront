@@ -1,0 +1,19 @@
+.narrow{
+    max-width: 760px;
+}
+.content{
+    white-space: pre-line;
+    color: var(--bs-secondary-color);
+    line-height: 1.8;
+    font-size: 1.02rem;
+}
+.muted{
+    color: var(--bs-secondary-color);
+}
+.empty{
+    text-align: center;
+    padding: 4rem 1rem;
+    background: var(--bs-card-bg);
+    border: 1px dashed var(--bs-border-color);
+    border-radius: 20px;
+}

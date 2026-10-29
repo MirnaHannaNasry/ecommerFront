@@ -1,0 +1,49 @@
+<div class="top-bar">
+  <div class="container">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-2">
+      <a routerLink="/home" class="logo d-flex align-items-center col-md-3 mb-2 mb-md-0 text-decoration-none">
+        🛍️&nbsp;MyStore
+      </a>
+
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a routerLink="home" class="nav-link px-2 " routerLinkActive="active">Home</a></li>
+
+        <li><a routerLink="product-list" class="nav-link px-2 "  routerLinkActive="active">Our Products</a></li>
+
+        @if(role == 'user'){
+          <li><a routerLink="my-orders" class="nav-link px-2 "  routerLinkActive="active">My Orders</a></li>
+        }
+
+        @if(role == 'admin'){
+          <li><a routerLink="/dashboard" class="nav-link px-2 ">Dashboard</a></li>
+        }
+        <li><a routerLink="faq" class="nav-link px-2 " routerLinkActive="active">FAQ</a></li>
+
+        <li><a routerLink="contact" class="nav-link px-2 " routerLinkActive="active">Contact</a></li>
+
+          <li>
+            <a routerLink="cart" class="nav-link px-2 " routerLinkActive="active">
+              Cart
+              @if((cartCount$ | async); as count){
+                <span class="badge rounded-pill bg-primary">{{count}}</span>
+              }
+            </a>
+          </li>
+
+      </ul>
+
+      @if(userName == ''){
+      <div class="col-md-3 text-end">
+        <button type="button" class="btn btn-outline-primary me-2" routerLink="login">Login</button>
+        <button type="button" class="btn btn-primary" routerLink="signup">Sign-up</button>
+      </div>
+    }
+    @else{
+      <div class="col-md-3 text-end">
+        Welcome: {{userName}} - <a routerLink="/user-profile">My Profile</a> 
+        <button type="button" class="btn btn-primary btn-sm ms-2" (click)="logout()">Logout</button>
+      </div>
+    }
+    </header>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+@if(state$ | async; as c){
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" (click)="c.answer(false)">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{c.title}}</h5>
+                <button type="button" class="btn-close" aria-label="Close" (click)="c.answer(false)"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">{{c.message}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="c.answer(false)">{{c.cancelText || 'Cancel'}}</button>
+                <button type="button" class="btn" [class.btn-danger]="c.danger" [class.btn-primary]="!c.danger" (click)="c.answer(true)">{{c.confirmText || 'Confirm'}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+}

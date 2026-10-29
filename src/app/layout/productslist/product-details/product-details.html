@@ -1,0 +1,63 @@
+<div class="container">
+@if(myProduct){
+<a routerLink="/product-list" class="text-muted">&laquo; Back to products</a>
+
+<div class="row mt-3 mb-5 card card-body flex-row flex-wrap p-3 p-md-4">
+    <div class="col-md-5 mb-3">
+        <img [src]="staticURL  + myProduct.imgURL" class="img-fluid rounded" [alt]="myProduct.name">
+    </div>
+    <div class="col-md-7">
+        @if(categoryName){
+        <span class="badge bg-secondary mb-2">{{categoryName}}</span>
+        }
+        <h1>{{myProduct.name}}</h1>
+
+        <p class="fs-3 fw-bold">{{myProduct.price | currency:'EGP':'code':'1.0-2'}}</p>
+
+        @if(myProduct.stock <= 0){
+            <span class="badge bg-danger mb-3">Out of stock</span>
+        }
+        @else if(myProduct.stock <= 3){
+            <span class="badge bg-warning text-dark mb-3">Only {{myProduct.stock}} left in stock</span>
+        }
+        @else{
+            <span class="badge bg-success mb-3">{{myProduct.stock}} in stock</span>
+        }
+
+        <p class="text-muted" style="white-space: pre-line;">{{myProduct.desc || 'No description available.'}}</p>
+
+        @if(myProduct.stock > 0){
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="input-group" style="width: 140px;">
+                <button class="btn btn-outline-secondary" (click)="decrease()" [disabled]="quantity <= 1">-</button>
+                <span class="form-control text-center">{{quantity}}</span>
+                <button class="btn btn-outline-secondary" (click)="increase()" [disabled]="quantity >= maxQuantity">+</button>
+            </div>
+            <button class="btn btn-primary" [disabled]="maxQuantity < 1" (click)="addToCart()">Add to cart</button>
+        </div>
+
+        @if(inCart > 0){
+            <div class="alert alert-info py-2">You have {{inCart}} in your cart. <a routerLink="/cart">View cart</a></div>
+        }
+        @if(maxQuantity < 1){
+            <div class="alert alert-warning py-2">You already have all the available stock in your cart.</div>
+        }
+        }
+    </div>
+</div>
+
+@if(relatedProducts.length){
+<h2>Related Products</h2>
+<div class="row">
+@for(product of relatedProducts;track product._id){
+<div class="col-12 col-sm-6 col-lg-3 mb-4">
+    <app-product [myProduct]="product"></app-product>
+</div>
+}
+</div>
+}
+}
+@else{
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+</div>

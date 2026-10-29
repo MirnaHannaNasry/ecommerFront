@@ -1,0 +1,20 @@
+.top-bar{
+    background: var(--bs-card-bg);
+    border-bottom: 1px solid var(--bs-border-color);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.logo{
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--bs-body-color);
+}
+.nav-link{
+    font-weight: 600;
+    color: var(--bs-secondary-color);
+}
+.nav-link:hover,
+.nav-link.active{
+    color: var(--brand);
+}

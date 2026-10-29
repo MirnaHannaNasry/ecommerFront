@@ -1,0 +1,21 @@
+<div class="container" style="max-width: 640px;">
+<h1>My profile</h1>
+@if(errorMessage){
+    <div class="alert alert-danger">{{errorMessage}}</div>
+}
+@else if(user){
+<div class="card card-body mb-3">
+    <p class="mb-1"><strong>Name:</strong> {{user.name}}</p>
+    <p class="mb-1"><strong>Email:</strong> {{user.email}}</p>
+    <p class="mb-0"><strong>Phone:</strong> {{user.phone || '-'}}</p>
+</div>
+<h5>Addresses</h5>
+@for(a of user.addresses;track a._id){
+<div class="card card-body mb-2">
+    <strong>{{a.label || 'Address'}} @if(a.isDefault){<span class="badge bg-primary">Default</span>}</strong>
+    <span class="text-muted">{{a.street}}, {{a.city}}@if(a.governorate){, {{a.governorate}}}</span>
+</div>
+}
+<a routerLink="/my-orders" class="btn btn-outline-primary mt-2">My orders</a>
+}
+</div>

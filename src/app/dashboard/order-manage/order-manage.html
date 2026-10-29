@@ -1,0 +1,49 @@
+<div class="container">
+<div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+    <h1 class="mb-0">Orders</h1>
+    <select class="form-select" style="max-width: 220px;" (change)="onFilter($any($event.target).value)">
+        <option value="">All statuses</option>
+        @for(s of statuses;track s){ <option [value]="s">{{s}}</option> }
+    </select>
+</div>
+
+@if(loading){
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+@else if(errorMessage){
+    <div class="alert alert-danger">{{errorMessage}}</div>
+}
+@else{
+    @for(o of orders;track o._id){
+    <div class="card card-body mb-3">
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+            <div><strong>#{{o._id.slice(-6).toUpperCase()}}</strong> <span class="text-muted small">{{o.createdAt | date:'medium'}}</span></div>
+            <div class="d-flex align-items-center gap-2">
+                <strong>{{o.totalPrice | currency:'EGP':'code':'1.0-2'}}</strong>
+                <select #statusSelect class="form-select form-select-sm text-capitalize" style="width: auto;" (change)="changeStatus(o, statusSelect.value, statusSelect)">
+                    @for(s of statuses;track s){ <option [value]="s" [selected]="s === o.status">{{s}}</option> }
+                </select>
+            </div>
+        </div>
+        <div class="small text-muted mt-1">
+            {{o.customer?.name}} - {{o.customer?.email}} - {{o.customer?.phone}}<br>
+            {{o.shippingAddress?.street}}, {{o.shippingAddress?.city}}@if(o.shippingAddress?.governorate){, {{o.shippingAddress?.governorate}}}
+        </div>
+        <button class="btn btn-outline-secondary btn-sm align-self-start mt-2" (click)="toggle(o._id)">{{openId === o._id ? 'Hide' : 'Show'}} {{o.items.length}} item(s)</button>
+        @if(openId === o._id){
+        <table class="table table-sm mt-2 mb-0">
+            <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
+            <tbody>
+                @for(i of o.items;track i.product){
+                <tr><td>{{i.name}}</td><td>{{i.quantity}}</td><td>{{i.price | currency:'EGP':'code':'1.0-2'}}</td><td>{{i.price * i.quantity | currency:'EGP':'code':'1.0-2'}}</td></tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+    } @empty {
+        <div class="text-center text-muted py-5">No orders found.</div>
+    }
+    <app-pagination [page]="page" [totalPages]="totalPages" (pageChange)="load($event)"></app-pagination>
+}
+</div>

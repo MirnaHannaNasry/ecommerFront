@@ -1,0 +1,10 @@
+.thumb{
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.qty{
+    width: 120px;
+    margin: 0 auto;
+}

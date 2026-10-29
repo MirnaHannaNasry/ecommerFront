@@ -1,0 +1,7 @@
+@if(totalPages > 1){
+<nav class="d-flex justify-content-center align-items-center gap-3 my-4">
+    <button class="btn btn-outline-secondary btn-sm" [disabled]="page <= 1" (click)="go(page - 1)">&laquo; Prev</button>
+    <span class="text-muted">Page {{page}} of {{totalPages}}</span>
+    <button class="btn btn-outline-secondary btn-sm" [disabled]="page >= totalPages" (click)="go(page + 1)">Next &raquo;</button>
+</nav>
+}

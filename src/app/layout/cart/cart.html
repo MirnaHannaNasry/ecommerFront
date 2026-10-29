@@ -1,0 +1,97 @@
+<div class="container">
+<h1>Your cart</h1>
+
+@if(loading$ | async){
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+@else if(lines.length === 0){
+    <div class="text-center py-5">
+        <h4>Your cart is empty</h4>
+        <p class="text-muted">Looks like you haven't added anything yet.</p>
+        <a routerLink="/product-list" class="btn btn-primary">Continue Shopping</a>
+    </div>
+}
+@else{
+
+    @if(hasPriceChanges){
+    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+        <span>Some prices changed since you added them. Please accept the new prices to continue.</span>
+        <button class="btn btn-sm btn-warning" (click)="acceptPrices()">Accept new prices</button>
+    </div>
+    }
+
+    <div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th class="text-end">Price</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-end">Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(line of lines;track line.productId){
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center gap-3">
+                        <img [src]="staticURL + line.imgURL" class="thumb" [alt]="line.name">
+                        <div>
+                            @if(line.slug){
+                            <a [routerLink]="'/product-list/' + line.slug" class="fw-semibold text-decoration-none">{{line.name}}</a>
+                            } @else {
+                            <span class="fw-semibold">{{line.name}}</span>
+                            }
+                            @if(!line.available){
+                                <div class="text-danger small">No longer available. Please remove it.</div>
+                            }
+                            @else if(!line.enoughStock){
+                                <div class="text-danger small">Not enough stock (only {{line.stock}} left). Lower the quantity.</div>
+                            }
+                            @else if(line.quantity >= line.stock){
+                                <div class="text-muted small">Maximum quantity reached</div>
+                            }
+                        </div>
+                    </div>
+                </td>
+                <td class="text-end">
+                    {{line.unitPrice | currency:'EGP':'code':'1.0-2'}}
+                    @if(line.oldPrice !== undefined){
+                        <br><s class="text-muted small">{{line.oldPrice | currency:'EGP':'code':'1.0-2'}}</s>
+                    }
+                </td>
+                <td class="text-center">
+                    <div class="input-group input-group-sm qty">
+                        <button class="btn btn-outline-secondary" (click)="decrease(line)" [disabled]="line.quantity <= 1" aria-label="Decrease quantity">-</button>
+                        <span class="form-control text-center">{{line.quantity}}</span>
+                        <button class="btn btn-outline-secondary" (click)="increase(line)" [disabled]="line.quantity >= line.stock" aria-label="Increase quantity">+</button>
+                    </div>
+                </td>
+                <td class="text-end fw-semibold">{{line.unitPrice * line.quantity | currency:'EGP':'code':'1.0-2'}}</td>
+                <td class="text-end">
+                    <button class="btn btn-outline-danger btn-sm" (click)="askRemove(line)" aria-label="Remove product">Remove</button>
+                </td>
+            </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end fs-5">Total ({{count}} item{{count === 1 ? '' : 's'}})</td>
+                <td class="text-end fs-4 fw-bold">{{total | currency:'EGP':'code':'1.0-2'}}</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+    </div>
+
+    @if(!isLoggedin){
+        <div class="alert alert-info">You need to log in to check out. Your cart will be kept.</div>
+    }
+
+    <div class="d-flex justify-content-between flex-wrap gap-2 mb-5">
+        <a routerLink="/product-list" class="btn btn-outline-secondary">&laquo; Continue Shopping</a>
+        <button class="btn btn-primary" [disabled]="isLoggedin && !canCheckout" (click)="checkout()">Proceed to checkout</button>
+    </div>
+}
+</div>

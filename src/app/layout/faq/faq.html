@@ -1,0 +1,44 @@
+<div class="container narrow">
+    <div class="text-center mb-4">
+        <span class="eyebrow">Help center</span>
+        <h1>Frequently asked questions</h1>
+        <p class="muted">Quick answers about ordering, delivery and your account.</p>
+        <input type="search" class="form-control search" placeholder="Search the questions..." [value]="search" (input)="search = $any($event.target).value">
+    </div>
+
+    @if(loading){
+        <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+    }
+    @else if(errorMessage){
+        <div class="alert alert-danger">{{errorMessage}}</div>
+    }
+    @else if(faqs.length === 0){
+        <div class="empty">
+            <h4>No questions yet</h4>
+            <p class="muted mb-0">We are still writing the answers. Please <a routerLink="/contact"><strong>contact us</strong></a> if you need help.</p>
+        </div>
+    }
+    @else{
+        <div class="list">
+        @for(f of filtered;track f._id){
+            <div class="item" [class.open]="openId === f._id">
+                <button class="question" (click)="toggle(f._id)" [attr.aria-expanded]="openId === f._id">
+                    <span>{{f.question}}</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+                @if(openId === f._id){
+                    <div class="answer">{{f.answer}}</div>
+                }
+            </div>
+        } @empty {
+            <p class="muted text-center">No question matches "{{search}}".</p>
+        }
+        </div>
+
+        <div class="help card card-body mt-4 text-center">
+            <h5>Still need help?</h5>
+            <p class="muted">Our team is happy to answer anything else.</p>
+            <a routerLink="/contact" class="btn btn-primary align-self-center">Contact us</a>
+        </div>
+    }
+</div>

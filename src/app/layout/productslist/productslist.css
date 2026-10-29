@@ -1,0 +1,14 @@
+.chip{
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-card-bg);
+    color: var(--bs-body-color);
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.chip.on{
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}

@@ -1,0 +1,23 @@
+<div class="container narrow">
+    @if(loading){
+        <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+    }
+    @else if(errorMessage){
+        <div class="alert alert-danger">{{errorMessage}}</div>
+    }
+    @else if(notWritten || !page){
+        <div class="empty">
+            <h4>This page is coming soon</h4>
+            @if(isAdmin){
+                <p class="muted">You are the admin: write this page from the dashboard.</p>
+                <a routerLink="/dashboard/page-manage" class="btn btn-primary">Open the dashboard</a>
+            } @else {
+                <a routerLink="/home" class="btn btn-primary mt-2">Back to the shop</a>
+            }
+        </div>
+    }
+    @else{
+        <h1>{{page.title}}</h1>
+        <div class="content">{{page.content}}</div>
+    }
+</div>

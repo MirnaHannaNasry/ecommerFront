@@ -1,0 +1,107 @@
+<div class="container">
+<h1>Checkout</h1>
+
+@if(loading$ | async){
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+@else if(lines.length === 0){
+    <div class="text-center py-5">
+        <h4>Your cart is empty</h4>
+        <a routerLink="/product-list" class="btn btn-primary">Continue Shopping</a>
+    </div>
+}
+@else{
+<div class="row mb-5">
+    <div class="col-lg-7">
+
+        @if(user && !user.phone){
+        <form class="card card-body mb-3" [formGroup]="phoneForm" (ngSubmit)="savePhone()">
+            <h5>Phone number</h5>
+            <p class="text-muted small">The courier needs a phone number to reach you.</p>
+            <input class="form-control mb-2" formControlName="phone" placeholder="01012345678">
+            @if(phoneForm.controls.phone.touched && phoneForm.controls.phone.invalid){
+                <div class="text-danger small mb-2">Enter a valid phone number (10-15 digits)</div>
+            }
+            <button class="btn btn-primary" [disabled]="saving">Save phone</button>
+        </form>
+        }
+
+        <div class="card card-body mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Delivery address</h5>
+                <button class="btn btn-outline-secondary btn-sm" (click)="showAddressForm = !showAddressForm">
+                    {{showAddressForm ? 'Cancel' : '+ New address'}}
+                </button>
+            </div>
+
+            @for(a of addresses;track a._id){
+            <div class="form-check border rounded p-3 ps-5 mb-2" [class.border-primary]="selectedAddress === a._id">
+                <input class="form-check-input" type="radio" name="address" [id]="'addr' + a._id" [checked]="selectedAddress === a._id" (change)="selectedAddress = a._id!">
+                <label class="form-check-label w-100" [for]="'addr' + a._id">
+                    <strong>{{a.label || 'Address'}}</strong><br>
+                    <span class="text-muted">{{a.street}}, {{a.city}}@if(a.governorate){, {{a.governorate}}}</span>
+                    @if(a.notes){<br><small class="text-muted">{{a.notes}}</small>}
+                </label>
+            </div>
+            }
+            @if(addresses.length === 0){
+                <div class="alert alert-warning">You have no saved address yet. Please add one.</div>
+            }
+
+            @if(showAddressForm || addresses.length === 0){
+            <form [formGroup]="addressForm" (ngSubmit)="saveAddress()" class="mt-2">
+                <div class="row g-2">
+                    <div class="col-md-6"><input class="form-control" formControlName="label" placeholder="Label (Home, Work)"></div>
+                    <div class="col-md-6"><input class="form-control" formControlName="governorate" placeholder="Governorate"></div>
+                    <div class="col-md-6"><input class="form-control" formControlName="city" placeholder="City *"></div>
+                    <div class="col-md-6"><input class="form-control" formControlName="street" placeholder="Street *"></div>
+                    <div class="col-12"><input class="form-control" formControlName="notes" placeholder="Notes (floor, landmark...)"></div>
+                </div>
+                @if(addressForm.touched && addressForm.invalid){
+                    <div class="text-danger small mt-1">City and street are required</div>
+                }
+                <button class="btn btn-primary mt-2" [disabled]="saving">Save address</button>
+            </form>
+            }
+        </div>
+
+        <div class="card card-body">
+            <h5>Payment</h5>
+            <p class="mb-0 text-muted">Cash on delivery: you pay when your order arrives.</p>
+        </div>
+    </div>
+
+    <div class="col-lg-5 mt-3 mt-lg-0">
+        <div class="card card-body">
+            <h5>Order summary</h5>
+            @for(l of lines;track l.productId){
+            <div class="d-flex align-items-center gap-2 py-2 border-bottom">
+                <img [src]="staticURL + l.imgURL" class="thumb" [alt]="l.name">
+                <div class="flex-grow-1">
+                    <div class="fw-semibold small">{{l.name}}</div>
+                    <div class="text-muted small">{{l.quantity}} x {{l.unitPrice | currency:'EGP':'code':'1.0-2'}}</div>
+                </div>
+                <strong>{{l.unitPrice * l.quantity | currency:'EGP':'code':'1.0-2'}}</strong>
+            </div>
+            }
+            <div class="d-flex justify-content-between py-3">
+                <span class="fs-5">Total</span>
+                <strong class="fs-4">{{total | currency:'EGP':'code':'1.0-2'}}</strong>
+            </div>
+
+            @if(problem){
+                <div class="alert alert-warning">{{problem}} <a routerLink="/cart">Review cart</a></div>
+            }
+            @if(errorMessage){
+                <div class="alert alert-danger">{{errorMessage}}</div>
+            }
+
+            <button class="btn btn-primary w-100" [disabled]="!canPlace" (click)="placeOrder()">
+                {{placing ? 'Placing order...' : 'Place order'}}
+            </button>
+            <p class="text-muted small text-center mt-2 mb-0">The final total is confirmed by our server when you place the order.</p>
+        </div>
+    </div>
+</div>
+}
+</div>

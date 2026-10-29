@@ -1,0 +1,36 @@
+<div class="container">
+<span class="eyebrow">Content</span>
+<h1>Pages</h1>
+<p class="text-muted">Write what customers read on the About, Policy and Contact pages.</p>
+
+<ul class="nav nav-pills mb-3">
+    @for(t of tabs;track t.key){
+    <li class="nav-item"><button class="nav-link" [class.active]="current === t.key" (click)="open(t.key)">{{t.label}}</button></li>
+    }
+</ul>
+
+@if(loading){
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+@else{
+<form class="card card-body" [formGroup]="form" (ngSubmit)="save()">
+    <label class="form-label">Title</label>
+    <input class="form-control mb-3" formControlName="title">
+
+    <label class="form-label">{{current === 'contact' ? 'Short welcome text (optional)' : 'Content'}}</label>
+    <textarea class="form-control mb-3" [rows]="current === 'contact' ? 2 : 12" formControlName="content"></textarea>
+
+    @if(current === 'contact'){
+    <div class="row g-3 mb-3">
+        <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" formControlName="email" placeholder="support@yourstore.com"></div>
+        <div class="col-md-6"><label class="form-label">Phone</label><input class="form-control" formControlName="phone" placeholder="+20 100 000 0000"></div>
+        <div class="col-md-6"><label class="form-label">WhatsApp number</label><input class="form-control" formControlName="whatsapp" placeholder="+20 100 000 0000"></div>
+        <div class="col-md-6"><label class="form-label">Address</label><input class="form-control" formControlName="address"></div>
+        <div class="col-md-6"><label class="form-label">Facebook (link or name)</label><input class="form-control" formControlName="facebook"></div>
+        <div class="col-md-6"><label class="form-label">Instagram (link or name)</label><input class="form-control" formControlName="instagram"></div>
+    </div>
+    }
+    <div><button class="btn btn-primary" [disabled]="saving">{{saving ? 'Saving...' : 'Save page'}}</button></div>
+</form>
+}
+</div>

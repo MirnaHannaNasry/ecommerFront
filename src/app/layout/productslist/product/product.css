@@ -1,0 +1,42 @@
+.product-card{
+    overflow: hidden;
+    transition: transform .15s;
+}
+.product-card:hover{
+    transform: translateY(-3px);
+}
+.imgbox{
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    background: var(--bs-border-color);
+}
+img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.tag{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 99px;
+}
+.tag.text-dark{
+    color: #1b2130 !important;
+}
+.name{
+    color: var(--bs-body-color);
+    min-height: 2.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.name:hover{
+    color: var(--brand);
+}

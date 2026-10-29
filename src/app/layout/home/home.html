@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="hero mb-4">
+        <h1 class="display-6 fw-bold text-white">Welcome to My Store</h1>
+        <p class="col-md-8 fs-5 mb-4">Browse our products, add them to your cart and pay when your order arrives.</p>
+        <a routerLink="/product-list" class="btn btn-light btn-lg">Shop now</a>
+    </div>
+
+    @if(products.length){
+    <h2 class="mb-3">Newest products</h2>
+    <div class="row">
+        @for(product of products;track product._id){
+        <div class="col-12 col-sm-6 col-lg-3 mb-4">
+            <app-product [myProduct]="product"></app-product>
+        </div>
+        }
+    </div>
+    }
+</div>

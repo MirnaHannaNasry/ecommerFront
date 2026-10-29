@@ -1,0 +1,98 @@
+<div class="container">
+<div class="d-flex justify-content-between mb-3">
+    <h1 class="mb-0">Products</h1>
+    <button class="btn btn-primary" (click)="openForm()">+ Add product</button>
+</div>
+
+@if(formOpen){
+<form class="card card-body mb-4" [formGroup]="form" (ngSubmit)="save()">
+    <h5>{{editing ? 'Edit product' : 'New product'}}</h5>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Name *</label>
+            <input class="form-control" formControlName="name">
+            @if(form.controls.name.touched && form.controls.name.invalid){ <small class="text-danger">Required</small> }
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Category *</label>
+            <select class="form-select" formControlName="category">
+                <option value="">Select...</option>
+                @for(c of categories;track c._id){ <option [value]="c._id">{{c.name}}</option> }
+            </select>
+            @if(form.controls.category.touched && form.controls.category.invalid){ <small class="text-danger">Required</small> }
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Price *</label>
+            <input type="number" min="0" step="0.01" class="form-control" formControlName="price">
+            @if(form.controls.price.touched && form.controls.price.invalid){ <small class="text-danger">Must be 0 or more</small> }
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Stock</label>
+            <input type="number" min="0" step="1" class="form-control" formControlName="stock">
+            @if(form.controls.stock.touched && form.controls.stock.invalid){ <small class="text-danger">Must be 0 or more</small> }
+        </div>
+        <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea rows="3" class="form-control" formControlName="desc"></textarea>
+        </div>
+        <div class="col-12 d-flex gap-4">
+            <div class="form-check"><input class="form-check-input" type="checkbox" id="trending" formControlName="isTrending"><label class="form-check-label" for="trending">Trending</label></div>
+            <div class="form-check"><input class="form-check-input" type="checkbox" id="active" formControlName="isActive"><label class="form-check-label" for="active">Active (visible in the shop)</label></div>
+        </div>
+        <div class="col-12 d-flex align-items-center gap-3">
+            @if(preview){ <img [src]="preview" class="preview" alt="Preview"> }
+            <div class="flex-grow-1">
+                <label class="form-label">Image {{editing ? '(leave empty to keep the current one)' : '*'}}</label>
+                <input type="file" class="form-control" accept=".png,.jpg,.jpeg,image/png,image/jpeg" (change)="onFile($event)">
+                @if(fileError){ <small class="text-danger">{{fileError}}</small> }
+            </div>
+        </div>
+    </div>
+    <div class="mt-3">
+        <button class="btn btn-primary me-2" [disabled]="saving">{{saving ? 'Saving...' : 'Save product'}}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="closeForm()">Cancel</button>
+    </div>
+</form>
+}
+
+@if(loading){
+    <div class="text-center py-5"><div class="spinner-border" role="status"></div></div>
+}
+@else if(errorMessage){
+    <div class="alert alert-danger">{{errorMessage}}</div>
+}
+@else{
+<div class="table-responsive">
+<table class="table align-middle">
+    <thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+        @for(p of products;track p._id){
+        <tr [class.opacity-50]="p.isDeleted">
+            <td><img [src]="staticURL + p.imgURL" class="thumb" alt=""></td>
+            <td class="fw-semibold">{{p.name}}</td>
+            <td>{{categoryName(p)}}</td>
+            <td>{{p.price | currency:'EGP':'code':'1.0-2'}}</td>
+            <td><span class="badge" [class.bg-danger]="p.stock <= 0" [class.bg-warning]="p.stock > 0 && p.stock <= 3" [class.text-dark]="p.stock > 0 && p.stock <= 3" [class.bg-success]="p.stock > 3">{{p.stock}}</span></td>
+            <td>
+                @if(p.isDeleted){ <span class="badge bg-danger">Deleted</span> }
+                @else if(!p.isActive){ <span class="badge bg-warning text-dark">Hidden</span> }
+                @else{ <span class="badge bg-success">Live</span> }
+            </td>
+            <td class="text-end">
+                @if(p.isDeleted){
+                    <button class="btn btn-outline-secondary btn-sm" (click)="restore(p)">Restore</button>
+                } @else {
+                    <button class="btn btn-outline-secondary btn-sm me-1" (click)="openForm(p)">Edit</button>
+                    <button class="btn btn-outline-danger btn-sm" (click)="remove(p)">Delete</button>
+                }
+            </td>
+        </tr>
+        } @empty {
+        <tr><td colspan="7" class="text-center text-muted">No products yet.</td></tr>
+        }
+    </tbody>
+</table>
+</div>
+<app-pagination [page]="page" [totalPages]="totalPages" (pageChange)="load($event)"></app-pagination>
+}
+</div>
